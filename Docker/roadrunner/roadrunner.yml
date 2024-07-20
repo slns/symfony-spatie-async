@@ -1,0 +1,11 @@
+http:
+  address: 0.0.0.0:8080
+  pool:
+    numWorkers: 4
+    maxJobs: 100
+    allocateTimeout: 30s
+    destroyTimeout: 10s
+  static:
+    dir: /var/www/html/public
+  middleware:
+    - "static"
