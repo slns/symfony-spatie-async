@@ -17,16 +17,11 @@ services:
     restart : unless-stopped
     extra_hosts :
       - "host.docker.internal:host-gateway"
-    # ports:
-    #   - "8084:8080"
     networks:
       - symfony
 
   nginx:
     image: 'nginx:alpine'
-#    build:
-#      context: .
-#      dockerfile: Docker/nginx/Dockerfile
     container_name: symfony_nginx
     volumes:
        - './project/:/app'
@@ -34,12 +29,6 @@ services:
     ports:
       - "8084:80"
     restart: unless-stopped
-#    labels :
-#      - "traefik.frontend.rule=Host:dev-google-api.adc-services.eu"
-#      - "traefik.docker.network=web"
-#      - "traefik.enable=true"
-#      - "traefik.frontend.entryPoints=https"
-#      - "traefik.port=80"
     depends_on:
       - php-fpm
     networks:
