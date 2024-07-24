@@ -1,61 +1,52 @@
-FROM php:8.1.0-fpm-alpine
+FROM phpdockerio/php:8.3-fpm
+WORKDIR "/app"
 
-RUN apk --update --no-cache add git
+# Instala pacotes necessários e extensões PHP
+RUN apt-get update \
+    && apt-get -y --no-install-recommends install \
+        build-essential \
+        git \
+        nano \
+        curl \
+        xz-utils \
+        php-pear \
+        php8.3-dev \
+        supervisor \
+        php8.3-amqp \
+        php8.3-bcmath \
+        php8.3-bz2 \
+        php8.3-cgi \
+        php8.3-curl \
+        php8.3-dba \
+        php8.3-gd \
+        php8.3-imap \
+        php8.3-intl \
+        php8.3-mysql \
+        php8.3-oauth \
+        php8.3-odbc \
+        php8.3-redis \
+        php8.3-snmp \
+        php8.3-soap \
+        php8.3-sqlite3 \
+        php8.3-ssh2 \
+        php8.3-xdebug \
+        php8.3-yaml \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN apk add bash
 
-RUN apk add --no-cache \
-        libjpeg-turbo-dev \
-        libpng-dev \
-        libwebp-dev \
-        freetype-dev \
-        zip \
-        libxml2-dev \
-        libzip-dev \
-        yarn \
-        p7zip
+## Instala Xdebug
+RUN pecl install xdebug
 
-RUN set -eux; \
-    apk update; \
-    apk add libxml2-dev; \
-    apk add php8-soap;
-
-RUN docker-php-ext-install soap
-RUN docker-php-ext-enable soap
-
-RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
-RUN docker-php-ext-install gd
-
-RUN docker-php-ext-install zip xml
-
-RUN apk add icu-dev
-RUN docker-php-ext-install mysqli pdo pdo_mysql
-RUN docker-php-ext-configure intl && docker-php-ext-install intl
-
-RUN apk add --update linux-headers
-
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && apk del -f .build-deps
-
-COPY Docker/php-fpm/conf/xdebug.ini /usr/local/etc/php/conf.d/docker-php1-ext-xdebug.ini
-COPY Docker/php-fpm/conf/uploads.ini /usr/local/etc/php/conf.d/docker-php1-ext-uploads.ini
-
+COPY Docker/php-fpm/conf/xdebug.ini /etc/php/8.3/cli/conf.d/docker-php-ext-xdebug.ini
+COPY Docker/php-fpm/conf/uploads.ini /etc/php/8.3/cli/conf.d/docker-php-ext-uploads.ini
+COPY Docker/php-fpm/conf/php-ini-overrides.ini /etc/php/8.3/cli/conf.d/php-ini-overrides.ini
 COPY Docker/php-fpm/conf/xdebug.log /tmp/xdebug.log
 
 RUN chmod 777 /tmp/xdebug.log
 
-RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
+COPY ../../project /app
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN chown -R www-data:www-data /app
 
-COPY ./project/ /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-
-WORKDIR /var/www/html
-
-EXPOSE 9000
-
-CMD composer install; yarn run build ; php-fpm
-# CMD ["sh", "-c", "composer install --no-interaction --prefer-dist --optimize-autoloader && yarn run build && php-fpm"]
+CMD composer install ; php-fpm8.3
