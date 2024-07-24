@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">{{ form.vars.value.id ? 'Edit Landing' : 'Create Landing' }}</h1>
+
+        {{ form_start(form, { 'attr': { 'class': 'needs-validation', 'novalidate': 'novalidate' } }) }}
+
+        <div class="mb-3">
+            {{ form_label(form.title, 'Title', { 'attr': { 'class': 'form-label' } }) }}
+            {{ form_widget(form.title, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter the title' } }) }}
+            {{ form_errors(form.title) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.path, 'Path', { 'attr': { 'class': 'form-label' } }) }}
+            {{ form_widget(form.path, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter the path' } }) }}
+            {{ form_errors(form.path) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.content, 'Content', { 'attr': { 'class': 'form-label' } }) }}
+            {{ form_widget(form.content, { 'attr': { 'class': 'form-control', 'placeholder': 'Enter a content (optional)' } }) }}
+            {{ form_errors(form.content) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.createdAt, 'Creation Date', { 'attr': { 'class': 'form-label' } }) }}
+            {{ form_widget(form.createdAt, { 'attr': { 'class': 'form-control', 'readonly': 'readonly' } }) }}
+            {{ form_errors(form.createdAt) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.updatedAt, 'Update Date', { 'attr': { 'class': 'form-label' } }) }}
+            {{ form_widget(form.updatedAt, { 'attr': { 'class': 'form-control', 'readonly': 'readonly' } }) }}
+            {{ form_errors(form.updatedAt) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            {{ form.vars.value.id ? 'Update' : 'Create' }}
+        </button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

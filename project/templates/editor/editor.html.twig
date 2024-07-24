@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editor Grapes.js{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block body %}
+    <div data-controller="grapesjs">
+        <div id="gjs" data-grapesjs-target="editor" style="height: 100vh; width: 100%;">
+            <div id="landing-content" style="display: none;">
+                {{ landing_content | raw }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

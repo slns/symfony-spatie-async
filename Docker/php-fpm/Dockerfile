@@ -34,19 +34,24 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+# Instala Node.js (necessário para Yarn)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
-## Instala Xdebug
-#RUN pecl install xdebug
+# Instala Yarn
+RUN npm install -g yarn
 
-#COPY Docker/php-fpm/conf/xdebug.ini /etc/php/8.3/cli/conf.d/docker-php-ext-xdebug.ini
-#COPY Docker/php-fpm/conf/uploads.ini /etc/php/8.3/cli/conf.d/docker-php-ext-uploads.ini
-#COPY Docker/php-fpm/conf/php-ini-overrides.ini /etc/php/8.3/cli/conf.d/php-ini-overrides.ini
-#COPY Docker/php-fpm/conf/xdebug.log /tmp/xdebug.log
-#
-#RUN chmod 777 /tmp/xdebug.log
+# Instala Xdebug (comentado por padrão)
+# RUN pecl install xdebug
+# COPY Docker/php-fpm/conf/xdebug.ini /etc/php/8.3/cli/conf.d/docker-php-ext-xdebug.ini
+# COPY Docker/php-fpm/conf/uploads.ini /etc/php/8.3/cli/conf.d/docker-php-ext-uploads.ini
+# COPY Docker/php-fpm/conf/php-ini-overrides.ini /etc/php/8.3/cli/conf.d/php-ini-overrides.ini
+# COPY Docker/php-fpm/conf/xdebug.log /tmp/xdebug.log
+# RUN chmod 777 /tmp/xdebug.log
 
 COPY ../../project /app
 
 RUN chown -R www-data:www-data /app
 
-CMD composer install ; php-fpm8.3
+CMD composer install && yarn install && php-fpm8.3

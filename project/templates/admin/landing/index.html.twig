@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Landings</h1>
+
+        <a href="{{ path('editor_new') }}" class="btn btn-primary mb-3">Create new Landing</a>
+
+        {% if landings is not empty %}
+            <ul class="list-group">
+                {% for landing in landings %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{{ path('app_editor', { id: landing.id }) }}" class="link-primary">{{ landing.title }}</a>
+                        <span class="text-muted">({{ landing.path }})</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No landings available.</p>
+        {% endif %}
+    </div>
+{% endblock %}

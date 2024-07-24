@@ -8,6 +8,12 @@ framework:
 
     #esi: true
     #fragments: true
+    http_method_override : true
+        # Adicionar cabeçalhos personalizados
+        # Exemplo para definir Permissions Policy
+#    response :
+#        headers :
+#            Permissions-Policy : clipboard-write=(self)
 
 when@test:
     framework:
