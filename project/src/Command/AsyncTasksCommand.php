@@ -18,21 +18,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class AsyncTasksCommand extends Command
 {
-    private $asyncTaskManager;
-
-    public function __construct(AsyncTaskManager $asyncTaskManager)
+    public function __construct(private readonly AsyncTaskManager $asyncTaskManager)
     {
-        $this->asyncTaskManager = $asyncTaskManager;
         parent::__construct();
     }
-
 
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+            ->setDescription('Execute asynchronous tasks using Spatie\'s Async package.')
+            ->addOption('tasks', null, InputOption::VALUE_REQUIRED, 'Number of async tasks to run', 5);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -42,7 +37,7 @@ class AsyncTasksCommand extends Command
         $output->writeln("Starting $tasksCount asynchronous tasks...");
 
         // Chama o método run() da AsyncTaskManager
-        $this->asyncTaskManager->run($tasksCount);
+        $this->asyncTaskManager->run($tasksCount, $output);
 
         $output->writeln('All tasks completed!');
 

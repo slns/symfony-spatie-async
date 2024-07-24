@@ -2,27 +2,28 @@
 
 namespace App\Service;
 
+use App\Task\ExampleTask;
 use Spatie\Async\Pool;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class AsyncTaskManager
 {
-    public function run(int $tasksCount)
+    public function run(int $tasksCount, OutputInterface $output): void
     {
         $pool = Pool::create();
 
-        // Adiciona tarefas ao pool
-        for ($i = 1; $i <= $tasksCount; $i++) {
-            $pool->add(function () use ($i) {
-                // Simula uma tarefa longa
-                sleep(rand(1, 3)); // Tempo aleatório entre 1 e 3 segundos
-                return "Task $i completed.";
-            })->then(function ($output) {
-                // Imprime o resultado da tarefa
-                echo "$output\n";
-            });
+        for ($i = 0; $i < $tasksCount; $i++) {
+            $task = new ExampleTask($i);
+
+            $pool->add($task)
+                ->then(function ($result) use ($output) {
+                    $output->writeln($result);
+                })
+                ->catch(function ($exception) use ($output) {
+                    $output->writeln('Error: ' . $exception->getMessage());
+                });
         }
 
-        // Aguarda a conclusão de todas as tarefas
         $pool->wait();
     }
 }

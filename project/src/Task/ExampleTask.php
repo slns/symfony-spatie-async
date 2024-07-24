@@ -6,16 +6,19 @@ use Spatie\Async\Task;
 
 class ExampleTask extends Task
 {
-    public function configure()
+    public function __construct(private readonly int $taskId)
     {
-        // Aqui você pode configurar a tarefa, se necessário
     }
 
-    public function run()
+    public function configure()
     {
-        // Coloque a lógica da sua tarefa aqui
-        // Este exemplo apenas retorna uma string após um atraso
-        sleep(2);
-        return 'Tarefa concluída!';
+        // Configurações adicionais podem ser feitas aqui
+    }
+
+    public function run(): string
+    {
+        // Lógica da tarefa
+        sleep(2); // Simula uma tarefa demorada
+        return "Task {$this->taskId} completed";
     }
 }
